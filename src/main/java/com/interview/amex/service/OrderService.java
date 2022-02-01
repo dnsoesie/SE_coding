@@ -1,18 +1,27 @@
 package com.interview.amex.service;
 
 import com.interview.amex.models.Order;
-import com.interview.amex.models.OrderSummary;
 import com.interview.amex.models.ProductItem;
+import com.interview.amex.repository.OrdersDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Component
 public class OrderService {
+
+    private final OrdersDto ordersDto;
+
+    @Autowired
+    public OrderService(OrdersDto ordersDto) {
+        this.ordersDto = ordersDto;
+    }
 
 
     public ResponseEntity<Order> placeNewOrder(Order order) {
@@ -48,6 +57,22 @@ public class OrderService {
                 order.setOrderTotal(totalCost);
             }
         }
+        ordersDto.save(order);
         return new ResponseEntity<>(order, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Order> getOrderById(String id) {
+        Optional<Order> order = ordersDto.findById(id);
+        Order order1 = null;
+        if(order.isPresent()) {
+            order1 = order.get();
+        }
+        return new ResponseEntity<>(order1, HttpStatus.OK);
+    }
+
+    public ResponseEntity<List<Order>> getAllOrdersInDb() {
+
+        List<Order> orders = ordersDto.findAll();
+        return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 }

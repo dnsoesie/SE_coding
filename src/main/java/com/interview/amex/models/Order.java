@@ -1,13 +1,22 @@
 package com.interview.amex.models;
 
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 
+@EntityScan
+@Document(collection = "orders")
 public class Order {
 
-    private int orderId;
+    @Id
+    private String id;
+    @Field("items")
     private List<ProductItem> productItemList;
+    @Field("total")
     private double orderTotal;
 
     public Order() {
@@ -21,7 +30,6 @@ public class Order {
     * */
     public Order(List<ProductItem> productItemList) {
         double total = 0;
-        this.orderId = new Random().nextInt(); // Generate a random Id for the Order.
         this.productItemList = productItemList;
 
         for (ProductItem productItem :
@@ -31,12 +39,12 @@ public class Order {
         this.orderTotal = total;
     }
 
-    public int getOrderId() {
-        return orderId;
+    public String getId() {
+        return id;
     }
 
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public List<ProductItem> getProductItemList() {
@@ -60,11 +68,11 @@ public class Order {
         if (this == o) return true;
         if (!(o instanceof Order)) return false;
         Order order = (Order) o;
-        return getOrderId() == order.getOrderId() && Double.compare(order.getOrderTotal(), getOrderTotal()) == 0 && getProductItemList().equals(order.getProductItemList());
+        return Objects.equals(getId(), order.getId()) && Double.compare(order.getOrderTotal(), getOrderTotal()) == 0 && getProductItemList().equals(order.getProductItemList());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getOrderId(), getProductItemList(), getOrderTotal());
+        return Objects.hash(getId(), getProductItemList(), getOrderTotal());
     }
 }
