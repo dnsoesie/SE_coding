@@ -1,6 +1,7 @@
 package com.interview.amex.models;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class Order {
@@ -52,5 +53,18 @@ public class Order {
 
     public void setOrderTotal(double orderTotal) {
         this.orderTotal = orderTotal;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Order)) return false;
+        Order order = (Order) o;
+        return getOrderId() == order.getOrderId() && Double.compare(order.getOrderTotal(), getOrderTotal()) == 0 && getProductItemList().equals(order.getProductItemList());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getOrderId(), getProductItemList(), getOrderTotal());
     }
 }
